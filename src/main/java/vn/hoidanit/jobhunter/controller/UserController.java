@@ -32,16 +32,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ericUser);
     }
 
-    @ExceptionHandler(value = IdInvalidException.class)
-    public ResponseEntity<String> handleIdException(IdInvalidException idException) {
-        return ResponseEntity.badRequest().body(idException.getMessage());
-    }
-
     // delete user by id
     @DeleteMapping("/users/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") long id) throws IdInvalidException {
         if (id >= 1500) {
-            throw new IdInvalidException("Id khong lon hon 1500");
+            throw new IdInvalidException("Id khong lon hon 1501");
         }
 
         this.userService.handleDeleteUser(id);
