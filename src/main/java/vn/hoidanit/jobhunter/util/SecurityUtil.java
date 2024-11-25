@@ -38,6 +38,7 @@ public class SecurityUtil {
         Instant now = Instant.now();
         Instant validity = now.plus(this.jwtExpiration, ChronoUnit.SECONDS);
 
+        // payload
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(validity)
@@ -45,6 +46,7 @@ public class SecurityUtil {
                 .claim("hoidanit", authentication)
                 .build();
 
+        // header
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
 
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
