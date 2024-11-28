@@ -44,7 +44,7 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers("/", "/login").permitAll()
+                                .requestMatchers("/", "/api/v1/login").permitAll()
                                 .anyRequest().authenticated())
 
                 // Tự động thêm BearerTokenAuthenticationFilter
