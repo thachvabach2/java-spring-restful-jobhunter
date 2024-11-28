@@ -52,7 +52,7 @@ public class AuthController {
                 Authentication authentication = authenticationManagerBuilder.getObject()
                                 .authenticate(authenticationToken);
 
-                // create a token
+                // set thông tin người dùng đăng nhập vào context (có thể sử dụng sau này)
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
                 ResLoginDTO res = new ResLoginDTO();
