@@ -23,6 +23,7 @@ import vn.hoidanit.jobhunter.domain.dto.ResLoginDTO;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
 import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
+import vn.hoidanit.jobhunter.util.error.IdInvalidException;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -67,7 +68,7 @@ public class AuthController {
                         res.setUser(userLogin);
                 }
 
-                String access_token = this.securityUtil.createAccessToken(authentication, res.getUser());
+                String access_token = this.securityUtil.createAccessToken(authentication.getName(), res.getUser());
 
                 res.setAccessToken(access_token);
 
@@ -84,6 +85,7 @@ public class AuthController {
                                 .path("/")
                                 .maxAge(refreshTokenExpiration)
                                 .build();
+
                 return ResponseEntity.ok()
                                 .header(HttpHeaders.SET_COOKIE, resCookies.toString())
                                 .body(res);
@@ -107,12 +109,54 @@ public class AuthController {
 
         @GetMapping("/auth/refresh")
         @ApiMessage("Get User by refresh token")
-        public ResponseEntity<String> getRefreshToken(
-                        @CookieValue(name = "refresh_token") String refresh_token) {
+        public ResponseEntity<ResLoginDTO> getRefreshToken(
+                        @CookieValue(name = "refresh_token", defaultValue = "abc") String refresh_token)
+                        throws IdInvalidException {
 
+                if (refresh_token.equals("abc")) {
+                        throw new IdInvalidException("Bạn không có refresh token ở cookies");
+                }
                 // Check valid
                 Jwt decodedToken = this.securityUtil.checkValidRefreshToken(refresh_token);
                 String email = decodedToken.getSubject();
-                return ResponseEntity.ok(email);
+
+                // check user by token + email
+                User currentUser = this.userService.getUserByRefreshTokenAndEmail(refresh_token, email);
+                if (currentUser == null) {
+                        throw new IdInvalidException("Refresh Token không hợp lệ");
+                }
+
+                // issue new token/set refresh token as cookies
+                ResLoginDTO res = new ResLoginDTO();
+                User currentUserDB = this.userService.handleGetUserByUsername(email);
+                if (currentUserDB != null) {
+                        ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
+                                        currentUserDB.getId(),
+                                        currentUserDB.getEmail(),
+                                        currentUserDB.getName());
+                        res.setUser(userLogin);
+                }
+
+                String access_token = this.securityUtil.createAccessToken(email, res.getUser());
+
+                res.setAccessToken(access_token);
+
+                // create refresh token
+                String new_refresh_token = this.securityUtil.createRefreshToken(email, res);
+
+                // update user
+                this.userService.updateUserToken(new_refresh_token, email);
+
+                // set cookies
+                ResponseCookie resCookies = ResponseCookie.from("refresh_token", new_refresh_token)
+                                .httpOnly(true)
+                                .secure(true)
+                                .path("/")
+                                .maxAge(refreshTokenExpiration)
+                                .build();
+
+                return ResponseEntity.ok()
+                                .header(HttpHeaders.SET_COOKIE, resCookies.toString())
+                                .body(res);
         }
 }
