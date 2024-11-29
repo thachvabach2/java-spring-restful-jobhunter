@@ -89,6 +89,11 @@ public class UserService {
         return currentUser;
     }
 
+    public User handleSaveUser(User reqUser) {
+        return this.userRepository.save(reqUser);
+
+    }
+
     public User handleGetUserByUsername(String username) {
         return this.userRepository.findByEmail(username);
     }
