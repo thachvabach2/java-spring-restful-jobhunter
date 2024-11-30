@@ -169,8 +169,8 @@ public class AuthController {
         public ResponseEntity<Void> postLogout(@CookieValue("refresh_token") String refresh_token,
                         HttpServletResponse response)
                         throws IdInvalidException {
-                String email = this.securityUtil.getCurrentUserLogin().isPresent()
-                                ? this.securityUtil.getCurrentUserLogin().get()
+                String email = SecurityUtil.getCurrentUserLogin().isPresent()
+                                ? SecurityUtil.getCurrentUserLogin().get()
                                 : "";
 
                 if (email.equals("")) {

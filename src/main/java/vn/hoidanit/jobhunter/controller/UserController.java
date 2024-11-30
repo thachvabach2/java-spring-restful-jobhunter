@@ -51,8 +51,9 @@ public class UserController {
 
         String hashPassword = this.passwordEncoder.encode(postManUser.getPassword());
         postManUser.setPassword(hashPassword);
+
         User ericUser = this.userService.handleCreateUser(postManUser);
-        ResCreateUserDTO userDTO = this.userService.convertToCreateUserDTO(ericUser);
+        ResCreateUserDTO userDTO = this.userService.convertToResCreateUserDTO(ericUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
     }
 
@@ -104,6 +105,7 @@ public class UserController {
         if (ericUser == null) {
             throw new IdInvalidException("User với id = " + user.getId() + " không tồn tại");
         }
+
         ResUpdateUserDTO userUpdateDTO = this.userService.convertToResUpdateUserDTO(ericUser);
         return ResponseEntity.ok(userUpdateDTO);
     }
