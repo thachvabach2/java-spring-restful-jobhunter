@@ -41,7 +41,7 @@ public class JobController {
         this.skillService = skillService;
     }
 
-    @PostMapping("/job")
+    @PostMapping("/jobs")
     @ApiMessage("create a job")
     public ResponseEntity<ResCreateJobDTO> createJob(@Valid @RequestBody Job job) throws IdInvalidException {
         ResCreateJobDTO res = this.jobService.handleCreateJob(job);
@@ -49,7 +49,7 @@ public class JobController {
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
-    @PutMapping("/job")
+    @PutMapping("/jobs")
     @ApiMessage("update a job")
     public ResponseEntity<ResUpdateJobDTO> updateJob(@Valid @RequestBody Job job) throws IdInvalidException {
         Optional<Job> currentJob = this.jobService.fetchJobById(job.getId());
@@ -60,7 +60,7 @@ public class JobController {
         return ResponseEntity.ok(this.jobService.handleUpdateJob(job, currentJob.get()));
     }
 
-    @DeleteMapping("/job/{id}")
+    @DeleteMapping("/jobs/{id}")
     @ApiMessage("delete a job by id")
     public ResponseEntity<Void> deleteJob(@PathVariable("id") long id) throws IdInvalidException {
         Optional<Job> jobOptional = this.jobService.fetchJobById(id);
@@ -71,13 +71,13 @@ public class JobController {
         return ResponseEntity.ok(null);
     }
 
-    @GetMapping("/job")
+    @GetMapping("/jobs")
     @ApiMessage("fetch all jobs")
     public ResponseEntity<ResultPaginationDTO> getAllJobs(@Filter Specification<Job> spec, Pageable pageable) {
         return ResponseEntity.ok().body(this.jobService.handleFetchAllJobs(spec, pageable));
     }
 
-    @GetMapping("/job/{id}")
+    @GetMapping("/jobs/{id}")
     @ApiMessage("fetch job by id")
     public ResponseEntity<Job> getJobById(@PathVariable("id") long id) throws IdInvalidException {
         Optional<Job> jobOptional = this.jobService.fetchJobById(id);
