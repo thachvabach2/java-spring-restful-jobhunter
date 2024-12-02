@@ -11,7 +11,7 @@ import vn.hoidanit.jobhunter.util.constant.ResumeStateEnum;
 
 @Getter
 @Setter
-public class ResGetResumeDTO {
+public class ResFetchResumeDTO {
     private long id;
     private String email;
     private String url;
@@ -25,6 +25,7 @@ public class ResGetResumeDTO {
     private String createdBy;
     private String updatedBy;
 
+    private String companyName;
     private UserResume user;
     private JobResume job;
 

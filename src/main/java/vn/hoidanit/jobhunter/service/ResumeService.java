@@ -14,7 +14,7 @@ import vn.hoidanit.jobhunter.domain.Resume;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.domain.response.resume.ResCreateResumeDTO;
-import vn.hoidanit.jobhunter.domain.response.resume.ResGetResumeDTO;
+import vn.hoidanit.jobhunter.domain.response.resume.ResFetchResumeDTO;
 import vn.hoidanit.jobhunter.domain.response.resume.ResUpdateResumeDTO;
 import vn.hoidanit.jobhunter.repository.JobRepository;
 import vn.hoidanit.jobhunter.repository.ResumeRepository;
@@ -88,9 +88,9 @@ public class ResumeService {
         this.resumeRepository.deleteById(id);
     }
 
-    public ResGetResumeDTO handleGetResume(Resume resume) {
+    public ResFetchResumeDTO handleGetResume(Resume resume) {
         // convert response
-        ResGetResumeDTO res = new ResGetResumeDTO();
+        ResFetchResumeDTO res = new ResFetchResumeDTO();
         res.setId(resume.getId());
         res.setEmail(resume.getEmail());
         res.setUrl(resume.getUrl());
@@ -100,8 +100,12 @@ public class ResumeService {
         res.setCreatedBy(resume.getCreatedBy());
         res.setUpdatedBy(resume.getUpdatedBy());
 
-        res.setUser(new ResGetResumeDTO.UserResume(resume.getUser().getId(), resume.getUser().getName()));
-        res.setJob(new ResGetResumeDTO.JobResume(resume.getJob().getId(), resume.getJob().getName()));
+        if (resume.getJob() != null) {
+            res.setCompanyName(resume.getJob().getCompany().getName());
+        }
+
+        res.setUser(new ResFetchResumeDTO.UserResume(resume.getUser().getId(), resume.getUser().getName()));
+        res.setJob(new ResFetchResumeDTO.JobResume(resume.getJob().getId(), resume.getJob().getName()));
 
         return res;
     }
@@ -120,7 +124,7 @@ public class ResumeService {
         rs.setMeta(mt);
 
         // remove sensitive data
-        List<ResGetResumeDTO> listResume = pageResume.getContent()
+        List<ResFetchResumeDTO> listResume = pageResume.getContent()
                 .stream().map(item -> this.handleGetResume(item))
                 .collect(Collectors.toList());
 

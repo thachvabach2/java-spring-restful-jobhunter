@@ -44,12 +44,6 @@ public class JobController {
     @PostMapping("/job")
     @ApiMessage("create a job")
     public ResponseEntity<ResCreateJobDTO> createJob(@Valid @RequestBody Job job) throws IdInvalidException {
-
-        // check null fields
-        if (job.getCompany() == null || job.getSkills() == null) {
-            throw new IdInvalidException("Phải có Fields Company và Skill");
-        }
-
         ResCreateJobDTO res = this.jobService.handleCreateJob(job);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
@@ -58,12 +52,12 @@ public class JobController {
     @PutMapping("/job")
     @ApiMessage("update a job")
     public ResponseEntity<ResUpdateJobDTO> updateJob(@Valid @RequestBody Job job) throws IdInvalidException {
-        Optional<Job> jobOptional = this.jobService.fetchJobById(job.getId());
-        if (!jobOptional.isPresent()) {
+        Optional<Job> currentJob = this.jobService.fetchJobById(job.getId());
+        if (!currentJob.isPresent()) {
             throw new IdInvalidException("Job not found");
         }
 
-        return ResponseEntity.ok(this.jobService.handleUpdateJob(job));
+        return ResponseEntity.ok(this.jobService.handleUpdateJob(job, currentJob.get()));
     }
 
     @DeleteMapping("/job/{id}")
