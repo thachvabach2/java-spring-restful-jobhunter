@@ -51,11 +51,12 @@ public class RoleController {
         }
 
         // check name (check khác hoidanit 1 chút)
-        if (this.roleService.existsByNameAndIdNot(r.getName(), r.getId())) {
-            throw new IdInvalidException("Role với name = " + r.getName() + " đã tồn tại");
-        }
+        // if (this.roleService.existsByNameAndIdNot(r.getName(), r.getId())) {
+        // throw new IdInvalidException("Role với name = " + r.getName() + " đã tồn
+        // tại");
+        // }
 
-        return ResponseEntity.ok(this.roleService.handleUpdateRole(r));
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.roleService.handleUpdateRole(r));
     }
 
     @GetMapping("/roles")
