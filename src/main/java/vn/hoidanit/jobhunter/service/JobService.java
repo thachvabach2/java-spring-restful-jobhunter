@@ -21,9 +21,9 @@ import vn.hoidanit.jobhunter.repository.SkillRepository;
 
 @Service
 public class JobService {
-    public final JobRepository jobRepository;
-    public final CompanyRepository companyRepository;
-    public final SkillRepository skillRepository;
+    private final JobRepository jobRepository;
+    private final CompanyRepository companyRepository;
+    private final SkillRepository skillRepository;
 
     public JobService(JobRepository jobRepository, CompanyRepository companyRepository,
             SkillRepository skillRepository) {

@@ -22,9 +22,9 @@ import vn.hoidanit.jobhunter.repository.UserRepository;
 
 @Service
 public class ResumeService {
-    public final ResumeRepository resumeRepository;
-    public final UserRepository userRepository;
-    public final JobRepository jobRepository;
+    private final ResumeRepository resumeRepository;
+    private final UserRepository userRepository;
+    private final JobRepository jobRepository;
 
     public ResumeService(ResumeRepository resumeRepository, UserRepository userRepository,
             JobRepository jobRepository) {
