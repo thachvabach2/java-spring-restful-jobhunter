@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.request.ReqLoginDTO;
@@ -175,8 +174,7 @@ public class AuthController {
 
         @PostMapping("/auth/logout")
         @ApiMessage("Logout User")
-        public ResponseEntity<Void> postLogout(@CookieValue("refresh_token") String refresh_token,
-                        HttpServletResponse response)
+        public ResponseEntity<Void> postLogout()
                         throws IdInvalidException {
                 String email = SecurityUtil.getCurrentUserLogin().isPresent()
                                 ? SecurityUtil.getCurrentUserLogin().get()
@@ -198,8 +196,7 @@ public class AuthController {
                                 .maxAge(0)
                                 .build();
 
-                return ResponseEntity
-                                .status(HttpStatus.CREATED)
+                return ResponseEntity.ok()
                                 .header(HttpHeaders.SET_COOKIE, deleteSpringCookie.toString())
                                 .body(null);
         }
