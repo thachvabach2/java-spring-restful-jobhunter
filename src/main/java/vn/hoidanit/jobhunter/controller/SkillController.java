@@ -77,9 +77,9 @@ public class SkillController {
 
     @GetMapping("/skills")
     @ApiMessage("fetch all skills")
-    public ResultPaginationDTO getAllSkills(@Filter Specification<Skill> spec, Pageable pageable) {
+    public ResponseEntity<ResultPaginationDTO> getAllSkills(@Filter Specification<Skill> spec, Pageable pageable) {
         ResultPaginationDTO skills = this.skillService.fetchAllSkills(spec, pageable);
-        return skills;
+        return ResponseEntity.ok(skills);
     }
 
 }

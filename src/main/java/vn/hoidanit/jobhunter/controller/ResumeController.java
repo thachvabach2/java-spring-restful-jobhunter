@@ -92,7 +92,7 @@ public class ResumeController {
 
     @GetMapping("/resumes")
     @ApiMessage("Fetch resumes with pagination")
-    public ResultPaginationDTO getAllResumes(@Filter Specification<Resume> spec, Pageable pageable) {
-        return this.resumeService.handleGetAllResumes(spec, pageable);
+    public ResponseEntity<ResultPaginationDTO> getAllResumes(@Filter Specification<Resume> spec, Pageable pageable) {
+        return ResponseEntity.ok(this.resumeService.handleGetAllResumes(spec, pageable));
     }
 }
