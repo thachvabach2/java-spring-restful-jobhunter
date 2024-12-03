@@ -53,9 +53,12 @@ public class PermissionController {
             throw new IdInvalidException("Permission với id = " + p.getId() + " không tồn tại");
         }
 
-        // check exist by module, Api and Module
+        // check exist by module, apiPath and Module
         if (this.permissionService.isPermissionExist(p)) {
-            throw new IdInvalidException("Permission đã tồn tại");
+            // check name
+            if (this.permissionService.isSameName(p)) {
+                throw new IdInvalidException("Permission đã tồn tại.");
+            }
         }
 
         // update permission
