@@ -56,7 +56,7 @@ public class RoleController {
         // tại");
         // }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.roleService.handleUpdateRole(r));
+        return ResponseEntity.ok().body(this.roleService.handleUpdateRole(r));
     }
 
     @GetMapping("/roles")
