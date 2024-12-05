@@ -1,6 +1,7 @@
 package vn.hoidanit.jobhunter.service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
@@ -13,6 +14,8 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import vn.hoidanit.jobhunter.domain.Job;
+import vn.hoidanit.jobhunter.repository.JobRepository;
 
 @Service
 public class EmailService {
@@ -20,13 +23,16 @@ public class EmailService {
     private final MailSender mailSender;
     private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine templateEngine;
+    private final JobRepository jobRepository;
 
     public EmailService(MailSender mailSender,
             JavaMailSender javaMailSender,
-            SpringTemplateEngine templateEngine) {
+            SpringTemplateEngine templateEngine,
+            JobRepository jobRepository) {
         this.mailSender = mailSender;
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
+        this.jobRepository = jobRepository;
     }
 
     // send email with text (no html)
@@ -56,6 +62,11 @@ public class EmailService {
     // send email with text (html with template)
     public void sendEmailFromTemplateSync(String to, String subject, String templateName) {
         Context context = new Context();
+        List<Job> arrJobs = this.jobRepository.findAll();
+        String name = "ERIC";
+        context.setVariable("name", name);
+        context.setVariable("jobs", arrJobs);
+
         String content = this.templateEngine.process(templateName, context);
         this.sendEmailSync(to, subject, content, false, true);
     }
