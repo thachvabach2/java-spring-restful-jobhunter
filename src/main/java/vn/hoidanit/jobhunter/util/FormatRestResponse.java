@@ -33,9 +33,18 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
         HttpServletResponse servletResponse = ((ServletServerHttpResponse) response).getServletResponse();
         int status = servletResponse.getStatus();
 
-        if (body instanceof String || body instanceof Resource) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(status);
+
+        // C1: check return from controller is application/json?
+        if (!MediaType.APPLICATION_JSON.equals(selectedContentType)) {
             return body;
         }
+
+        // C2
+        // if (body instanceof String || body instanceof Resource) {
+        // return body;
+        // }
 
         String path = request.getURI().getPath();
         if (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui")) {
@@ -47,12 +56,11 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
             return body;
         } else {
             // case success
-            RestResponse<Object> res = new RestResponse<>();
-            res.setStatusCode(status);
             res.setData(body);
             ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);
             res.setMessage(message != null ? message.value() : "CALL API SUCCESS");
-            return res;
         }
+        return res;
+
     }
 }
